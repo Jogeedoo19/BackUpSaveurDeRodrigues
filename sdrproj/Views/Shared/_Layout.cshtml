@@ -40,8 +40,8 @@
         <div class="container topbar bg-primary d-none d-lg-block">
             <div class="d-flex justify-content-between">
                 <div class="top-info ps-2">
-                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
+                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">Rodrigues</a></small>
+                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">saveurde.rodrigues@gmail.com</a></small>
                 </div>
                 <div class="top-link pe-2">
                     <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
@@ -58,19 +58,19 @@
                 </button>
                 <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                     <div class="navbar-nav mx-auto">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="shop.html" class="nav-item nav-link">Shop</a>
-                        <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
+                        <a class="nav-item nav-link active" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Shop">Shop</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="ShopDetail">Shop Detail</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                <a href="cart.html" class="dropdown-item">Cart</a>
-                                <a href="chackout.html" class="dropdown-item">Chackout</a>
-                                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                <a href="404.html" class="dropdown-item">404 Page</a>
+                                <a class="dropdown-item" asp-controller="Home" asp-action="Cart">Cart</a>
+                                <a class="dropdown-item" asp-controller="Home" asp-action="Checkout">Checkout</a>
+                                <a class="dropdown-item" asp-controller="Home" asp-action="Testimonial">Testimonial</a>
+                               
                             </div>
                         </div>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="ContactUs">Contact</a>
                     </div>
                     <div class="d-flex m-3 me-0">
                         <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
@@ -104,7 +104,7 @@
                 <div class="row g-4">
                     <div class="col-lg-3">
                         <a href="#">
-                            <h1 class="text-primary mb-0">Fruitables</h1>
+                            <h1 class="text-primary mb-0">Saveur De Rodrigues</h1>
                             <p class="text-secondary mb-0">Fresh products</p>
                         </a>
                     </div>
@@ -129,8 +129,7 @@
                     <div class="footer-item">
                         <h4 class="text-light mb-3">Why People Like us!</h4>
                         <p class="mb-4">
-                            typesetting, remaining essentially unchanged. It was
-                            popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.
+                            We sell unique, fresh and organic product from rodrigues!
                         </p>
                         <a href="" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Read More</a>
                     </div>
@@ -160,9 +159,9 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="footer-item">
                         <h4 class="text-light mb-3">Contact</h4>
-                        <p>Address: 1429 Netus Rd, NY 48247</p>
-                        <p>Email: Example@gmail.com</p>
-                        <p>Phone: +0123 4567 8910</p>
+                        <p>Address: Rodrigues</p>
+                        <p>Email: saveurde.rodrigues@gmail.com</p>
+                        <p>Phone: 00000000</p>
                         <p>Payment Accepted</p>
                         <img src="img/payment.png" class="img-fluid" alt="">
                     </div>
