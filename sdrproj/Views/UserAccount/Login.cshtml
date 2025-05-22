@@ -1,0 +1,27 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+
+
+<h2>User Login</h2>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<form method="post">
+    <div><label>Email:</label><input type="email" name="email" required /></div>
+    <div><label>Password:</label><input type="password" name="password" required /></div>
+    <button type="submit">Login</button>
+</form>
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+

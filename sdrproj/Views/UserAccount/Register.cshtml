@@ -1,0 +1,26 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+
+<h2>User Registration</h2>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<form method="post">
+    <div><label>Name:</label><input asp-for="Name" required /></div>
+    <div><label>Email:</label><input asp-for="Email" required /></div>
+    <div><label>Password:</label><input asp-for="Password" type="password" required /></div>
+    <div><label>Phone:</label><input asp-for="Phone" /></div>
+    <div><label>Address:</label><input asp-for="Address" /></div>
+    <div><label>Postal Code:</label><input asp-for="PostalCode" /></div>
+    <button type="submit">Register</button>
+</form>
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
