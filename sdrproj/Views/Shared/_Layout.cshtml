@@ -71,11 +71,37 @@
                             </div>
                         </div>
                         <a class="nav-item nav-link" asp-controller="Home" asp-action="ContactUs">Contact</a>
+                        @if (Context.Session.GetString("UserId") != null)
+                        {
+                            <!-- User is logged in - Show user info and logout -->
+                         
+                                <a class="nav-item nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                    @if (!string.IsNullOrEmpty(Context.Session.GetString("Name")))
+                                    {
+                                        <span>Welcome, @Context.Session.GetString("Name")</span>
+                                    }
+                                    else
+                                    {
+                                        <span>My Account</span>
+                                    }
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Profile</a></li>
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Settings">Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="UserAccount" asp-action="Logout">Logout</a></li>
+                                </ul>
+                            
+                        }
+                        else
+                        {
                         <a class="nav-item nav-link" asp-controller="UserAccount" asp-action="Register">Register</a>
                         <a class="nav-item nav-link" asp-controller="UserAccount" asp-action="Login">Login</a>
+                        }
 
                     </div>
                     <div class="d-flex m-3 me-0">
+                       
                         <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                         <a href="#" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
@@ -204,6 +230,13 @@
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
+    @RenderSection("Scripts", required: false)
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+    
+
+
 </body>
 
 
