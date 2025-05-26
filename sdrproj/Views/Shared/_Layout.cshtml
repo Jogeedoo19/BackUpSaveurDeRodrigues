@@ -46,7 +46,18 @@
                 <div class="top-link pe-2">
                     <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
                     <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+                    <a href="#" class=""><small class="text-white ms-2">Sales and Refunds</small></a>
+ <div class="dropdown ms-3">
+        <a class="dropdown-toggle d-flex align-items-center text-white text-decoration-none"
+           href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user me-1"></i>
+            <span>Merchant</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item py-2" asp-controller="MerchantAccount" asp-action="Register">Register</a></li>
+            <li><a class="dropdown-item py-2" asp-controller="MerchantAccount" asp-action="Login">Login</a></li>
+        </ul>
+    </div>
                 </div>
             </div>
         </div>
@@ -108,7 +119,8 @@
                             <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
                         </a>
                         <a href="#" class="my-auto">
-                            <i class="fas fa-user fa-2x"></i>
+                            <i class="fas fa-user fa-2x"> </i>
+                              
                         </a>
                     </div>
                 </div>
