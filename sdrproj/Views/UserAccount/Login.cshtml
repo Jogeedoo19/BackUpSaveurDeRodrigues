@@ -2,26 +2,99 @@
 @{
     ViewData["Title"] = "Login";
 }
+<br /><br /><br /><br />
+<style>
+    .animated-welcome {
+        display: inline-block;
+        font-size: 1.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 3px solid rgba(255,255,255,0.75);
+        width: 0;
+        max-width: 100%;
+        animation: typing 3s steps(40, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    @@keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+
+    @@keyframes blink {
+        from, to { border-color: transparent; }
+        50% { border-color: white; }
+    }
+</style>
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 shadow rounded-4 overflow-hidden" style="min-height: 500px;">
+            <div class="row h-100">
+
+                <!-- Left: Welcome Panel -->
+                <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center p-4 text-white" style="background: var(--primary); position: relative;">
+                    <h2 class="fw-bold mb-2 animated-welcome text-center">Welcome to <br />Saveur de Rodrigues</h2>
+                    <p class="text-center">Login to access your personalized dashboard and manage your account.</p>
+                    <img src="~/img/sea.jpg" alt="Login Art" class="img-fluid mt-3 rounded shadow" style="max-height: 300px; object-fit: cover; width: 100%;">
+                </div>
+
+                <!-- Right: Login Form -->
+                <div class="col-md-6 bg-white p-5">
+                    <h4 class="text-center mb-4">Login to Your Account</h4>
+
+                    <form method="post">
+                        <!-- Email Field -->
+                        <div class="form-floating mb-4 position-relative">
+                            <input type="email" name="email" id="email" class="form-control ps-5" placeholder="Email" required />
+                            <label for="email">Email address</label>
+                              </div>
+
+                        <!-- Password Field -->
+                        <div class="form-floating mb-4 position-relative">
+                            <input type="password" name="password" id="passwordInput" class="form-control ps-5 pe-5" placeholder="Password" required />
+                            <label for="passwordInput">Password</label>
+                            <i class="bi bi-eye toggle-icon position-absolute top-50 translate-middle-y text-muted" id="togglePasswordIcon" style="right: 15px; cursor: pointer;"></i>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+
+                    <!-- Error Message -->
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger mt-3 text-center" role="alert">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    <!-- Register Link -->
+                    <p class="mt-4 text-center small">
+                        Don't have an account?
+                        <a asp-controller="UserAccount" asp-action="Register" class="text-decoration-none">Register now</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 
-<h2>User Login</h2>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<form method="post">
-    <div><label>Email:</label><input type="email" name="email" required /></div>
-    <div><label>Password:</label><input type="password" name="password" required /></div>
-    <button type="submit">Login</button>
-</form>
-@if (ViewBag.Error != null)
-{
-    <p style="color:red">@ViewBag.Error</p>
-}
-
+<!-- Password Toggle Script -->
+<script>
+    document.getElementById('togglePasswordIcon').addEventListener('click', function () {
+        const input = document.getElementById('passwordInput');
+        const icon = this;
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    });
+</script>
