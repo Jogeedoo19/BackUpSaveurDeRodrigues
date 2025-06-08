@@ -13,7 +13,7 @@
 <br />
 <br />
 <br />
-<br />  
+<br />
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -22,29 +22,29 @@
                     <h3 class="card-title">Create New SubCategory</h3>
                 </div>
                 <div class="card-body">
-                    <form asp-action="CreateSubCategory" method="post">
+                    <form asp-controller="AdminCategory" asp-action="CreateSubCategory" method="post">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
                         <div class="mb-3">
                             <label asp-for="CategoryId" class="form-label">Select Category</label>
-                            <select asp-for="CategoryId" class="form-select">
+                            <select asp-for="CategoryId" class="form-select" required>
                                 <option value="">-- Select Category --</option>
-                                @foreach (var category in ViewBag.Categories as List<sdrproj.Models.Category>)
+                                @if (ViewBag.Categories != null)
                                 {
-                                    <option value="@category.CategoryId">@category.Name</option>
+                                    @foreach (var category in ViewBag.Categories as List<Category>)
+                                    {
+                                        <option value="@category.CategoryId">@category.Name</option>
+                                    }
                                 }
                             </select>
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
-
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label">SubCategory Name</label>
-                            <input asp-for="Name" class="form-control" placeholder="Enter subcategory name" />
+                            <input asp-for="Name" class="form-control" placeholder="Enter subcategory name" required />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
-
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="@Url.Action("Index")" class="btn btn-secondary me-md-2">Cancel</a>
+                            <a href="@Url.Action("Index", "AdminCategory")" class="btn btn-secondary me-md-2">Cancel</a>
                             <button type="submit" class="btn btn-success">Create SubCategory</button>
                         </div>
                     </form>
@@ -53,3 +53,9 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+}

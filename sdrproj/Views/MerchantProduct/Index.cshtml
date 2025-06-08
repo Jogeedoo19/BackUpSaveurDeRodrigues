@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Index";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<h1>Index</h1>
+
+<form method="get" asp-action="Index">
+    <input type="text" name="searchString" placeholder="Search..." />
+    <button type="submit">Search</button>
+</form>
+
+<a asp-action="Create" class="btn btn-primary">Add New Product</a>
+
+<table class="table mt-3">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Category</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Price</td>
+            <td>@item.Stock</td>
+            <td>@item.SubCategory?.Name</td>
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
