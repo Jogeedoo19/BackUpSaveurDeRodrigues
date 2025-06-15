@@ -30,5 +30,12 @@ namespace sdrproj.Models
 
         // Navigation property
         public virtual SubCategory? SubCategory { get; set; }
+
+    
+        public string ImageUrl { get; set; } = string.Empty;
+
+        public DateTime CreatedDateTime { get; set; } = DateTime.Now;
+
+        public string Status { get; set; } = "active";
     }
 }

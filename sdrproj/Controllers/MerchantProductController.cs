@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using sdrproj.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace sdrproj.Controllers
 {
     public class MerchantProductController : Controller
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
         private readonly ApplicationDbContext _context;
 
-        public MerchantProductController(ApplicationDbContext context)
+        public MerchantProductController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         private void PopulateSubCategoryDropDown(object selectedSubCategory = null)
@@ -49,7 +54,7 @@ namespace sdrproj.Controllers
         // POST: Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(Product product, IFormFile productImage)
         {
             try
             {
@@ -59,6 +64,9 @@ namespace sdrproj.Controllers
                 // Debug: Log ModelState errors
                 if (!ModelState.IsValid)
                 {
+
+                  
+
                     var errors = ModelState
                         .Where(x => x.Value.Errors.Count > 0)
                         .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) })
@@ -72,6 +80,42 @@ namespace sdrproj.Controllers
                 {
                     // Assigning dummy MerchantId for now – you can pull from session/login later
                     product.MerchantId = 1;
+
+                    // Profile Picture Upload -OPTIONAL
+                    if (productImage != null && productImage.Length > 0)
+                    {
+                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                        var extension = Path.GetExtension(productImage.FileName).ToLower();
+
+                        if (!allowedExtensions.Contains(extension))
+                        {
+                            ModelState.AddModelError("Picture", "Only JPG and PNG files are allowed.");
+                            return View(product);
+                        }
+
+                        if (productImage.Length > 2 * 1024 * 1024) // 2MB max
+                        {
+                            ModelState.AddModelError("ProfilePicture", "Maximum file size is 2MB.");
+                            return View(product);
+                        }
+
+                        var fileName = $"{Guid.NewGuid()}{extension}";
+                        var filePath = Path.Combine(_hostEnvironment.WebRootPath, "images/product", fileName);
+                        var directory = Path.GetDirectoryName(filePath);
+
+                        if (directory != null)
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await productImage.CopyToAsync(stream);
+                        }
+
+                        product.ImageUrl = "/images/users/" + fileName;
+                    }
+
 
                     _context.Add(product);
                     await _context.SaveChangesAsync();
