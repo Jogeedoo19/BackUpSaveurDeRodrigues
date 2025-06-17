@@ -13,17 +13,12 @@
 
             <h2 class="mb-4 text-center">✏️ Edit Product</h2>
 
-            <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light">
+            <form asp-action="Edit" method="post" class="shadow p-4 rounded bg-light" enctype="multipart/form-data">
                 <input type="hidden" asp-for="ProductId" />
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <!-- Optional: Include MerchantId if needed -->
-                <div class="mb-3">
-                    <label asp-for="MerchantId" class="form-label">Merchant ID</label>
-                    <input asp-for="MerchantId" class="form-control" readonly />
-                    <span asp-validation-for="MerchantId" class="text-danger"></span>
-                </div>
+              
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label">Product Name</label>

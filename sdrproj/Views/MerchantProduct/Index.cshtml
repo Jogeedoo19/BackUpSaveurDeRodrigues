@@ -25,7 +25,7 @@
                 <th>Name</th>
                 <th>Price</th>
                 <th>Stock</th>
-                <th>Category</th>
+                <th>Image</th>
                 <th>Category</th>
                 <th style="width: 160px;">Actions</th>
             </tr>
@@ -37,7 +37,16 @@
                     <td>@item.Name</td>
                     <td>@item.Price.ToString("C")</td>
                     <td>@item.Stock</td>
-                    <td>"@item.ImageUrl</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="Product Image" width="80" height="80" class="img-thumbnail" />
+                        }
+                        else
+                        {
+                            <span>No image</span>
+                        }
+                    </td>
                     <td>@item.SubCategory?.Name</td>
                     <td>
                         <div class="btn-group" role="group">

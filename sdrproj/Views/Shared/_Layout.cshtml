@@ -80,7 +80,10 @@
                                 <a class="dropdown-item" asp-controller="Home" asp-action="Cart">Cart</a>
                                 <a class="dropdown-item" asp-controller="Home" asp-action="Checkout">Checkout</a>
                                 <a class="dropdown-item" asp-controller="Home" asp-action="Testimonial">Testimonial</a>
-                               
+                                 @if (Context.Session.GetString("MerchantId") != null)
+                        {
+                                <a class="dropdown-item" asp-controller="MerchantProduct" asp-action="Index">Product</a>
+                        }
                             </div>
                         </div>
                         <a class="nav-item nav-link" asp-controller="Home" asp-action="ContactUs">Contact</a>

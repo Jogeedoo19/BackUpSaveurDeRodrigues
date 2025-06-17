@@ -21,7 +21,7 @@ public class MerchantAccountController : Controller
     public IActionResult Register()
     {
         // Redirect to home if already logged in
-        if (HttpContext.Session.GetString("MerchantId") != null)
+        if (HttpContext.Session.GetInt32("MerchantId") != null)
         {
             return RedirectToAction("Index", "Home");
         }
@@ -34,7 +34,7 @@ public class MerchantAccountController : Controller
     public async Task<IActionResult> Register(Merchant Merchant, IFormFile profileImage)
     {
         // Redirect to home if already logged in
-        if (HttpContext.Session.GetString("MerchantId") != null)
+        if (HttpContext.Session.GetInt32("MerchantId") != null)
         {
             return RedirectToAction("Index", "Home");
         }
@@ -111,7 +111,7 @@ public class MerchantAccountController : Controller
     public IActionResult Login()
     {
         // Redirect to home if already logged in
-        if (HttpContext.Session.GetString("MerchantId") != null)
+        if (HttpContext.Session.GetInt32("MerchantId") != null)
         {
             return RedirectToAction("Index", "Home");
         }
@@ -129,7 +129,7 @@ public class MerchantAccountController : Controller
     public IActionResult Login(string email, string password)
     {
         // Redirect to home if already logged in
-        if (HttpContext.Session.GetString("MerchantId") != null)
+        if (HttpContext.Session.GetInt32("MerchantId") != null)
         {
             return RedirectToAction("Index", "Home");
         }
@@ -140,8 +140,8 @@ public class MerchantAccountController : Controller
 
             if (Merchant != null && BCrypt.Net.BCrypt.Verify(password, Merchant.Password))
             {
-                // Set session variables
-                HttpContext.Session.SetString("MerchantId", Merchant.MerchantId.ToString());
+                // Set session variables - Using consistent data types
+                HttpContext.Session.SetInt32("MerchantId", Merchant.MerchantId); // Changed to SetInt32
                 HttpContext.Session.SetString("MerchantRole", "Merchant");
                 HttpContext.Session.SetString("MerchantEmail", Merchant.Email);
 
@@ -150,7 +150,6 @@ public class MerchantAccountController : Controller
                 {
                     HttpContext.Session.SetString("Name", Merchant.Name);
                 }
-
 
                 TempData["WelcomeMessage"] = "Welcome back!";
                 return RedirectToAction("Index", "Home");
@@ -177,6 +176,6 @@ public class MerchantAccountController : Controller
     // Check if Merchant is logged in (helper method for other controllers)
     public static bool IsMerchantLoggedIn(HttpContext context)
     {
-        return !string.IsNullOrEmpty(context.Session.GetString("MerchantId"));
+        return context.Session.GetInt32("MerchantId") != null; // Changed to GetInt32
     }
 }
