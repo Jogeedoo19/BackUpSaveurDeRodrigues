@@ -258,5 +258,19 @@ namespace sdrproj.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> ViewProduct(string searchString)
+        {
+            IQueryable<Product> products = _context.Products.Include(p => p.SubCategory);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.Name.Contains(searchString) || p.Description.Contains(searchString));
+            }
+
+            return View(await products.ToListAsync());
+        }
+
+
     }
 }

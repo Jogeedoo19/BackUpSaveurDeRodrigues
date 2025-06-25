@@ -1,0 +1,59 @@
+﻿@model sdrproj.Models.Product
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+@if (TempData["WishlistMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        @TempData["WishlistMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="container py-5">
+    <div class="row align-items-center g-5">
+
+        <!-- Product Image -->
+        <div class="col-lg-6 text-center">
+            <div class="shadow rounded-4 overflow-hidden">
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded-4" style="max-height: 500px; object-fit: cover;" loading="lazy">
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold mb-3">@Model.Name</h1>
+            <p class="text-muted fs-5">@Html.Raw(Model.Description)</p>
+
+            <div class="mb-4">
+                <span class="badge bg-success px-3 py-2 fs-6">Available</span>
+                <span class="ms-3 text-primary fw-semibold fs-4">$@Model.Price</span> <!-- Optional -->
+            </div>
+
+            <!-- Icons (Optional) -->
+            <div class="d-flex align-items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-chat-left-text-fill text-primary me-3" viewBox="0 0 16 16">
+                    <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5.414l-3.707 3.707A1 1 0 0 1 0 16V2z"/>
+                </svg>
+                <span class="text-muted">Need help? Contact us</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-3 d-md-block">
+                <a href="#" class="btn btn-lg btn-primary rounded-pill px-4 me-3 shadow">Buy Now</a>
+                <a asp-controller="Home" asp-action="Add" asp-route-id="@Model.ProductId" class="btn btn-lg btn-outline-secondary rounded-pill px-4">Add to wishlist</a>
+            </div>
+        </div>
+
+    </div>
+</div>

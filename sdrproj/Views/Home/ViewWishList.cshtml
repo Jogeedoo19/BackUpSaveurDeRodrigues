@@ -1,0 +1,41 @@
+﻿@model IEnumerable<WishList>
+
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<h2 class="mb-4">My Wishlist</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Your wishlist is empty.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@item.Product.ImageUrl" class="card-img-top" alt="@item.Product.Name" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Product.Name</h5>
+                        <p class="card-text">@item.Product.Description</p>
+                        <p class="text-muted small">Added on @item.TimeAdd.ToString("dd MMM yyyy HH:mm")</p>
+                        <div class="d-flex justify-content-between flex-lg-wrap">
+
+                            <a asp-controller="Home" asp-action="Remove" asp-route-id="@item.WishlistId" class="btn btn-sm btn-outline-success">Remove </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

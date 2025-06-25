@@ -245,5 +245,8 @@ namespace sdrproj.Controllers
 
             return Json(subCategories);
         }
+
+    
+
     }
 }

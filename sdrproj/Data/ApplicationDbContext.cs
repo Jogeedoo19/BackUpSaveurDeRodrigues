@@ -15,6 +15,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Product> Products { get; set; }
 
     public DbSet<ContactUs> ContactUs { get; set; }
+
+    public DbSet<WishList> WishList { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
