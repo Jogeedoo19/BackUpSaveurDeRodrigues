@@ -179,4 +179,75 @@ public class UserAccountController : Controller
     {
         return !string.IsNullOrEmpty(context.Session.GetString("UserId"));
     }
+
+    public async Task<IActionResult> Edit(int id)
+    {
+
+        var UserId = HttpContext.Session.GetString("UserId");
+        if (UserId == null) return RedirectToAction("Login", "UserAccount");
+
+
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+            return NotFound();
+
+        // Clear password fields for editing
+        user.Password = string.Empty;
+        user.ConfirmPassword = string.Empty;
+
+        return View(user);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("UserId,Name,Email,Password,ConfirmPassword,Phone,Address,PostalCode,Status")] User user)
+    {
+        if (id != user.UserId)
+            return NotFound();
+
+        var existingUser = await _context.Users.FindAsync(id);
+        if (existingUser == null)
+            return NotFound();
+
+        // Remove validation for Password if empty (unchanged)
+        if (string.IsNullOrEmpty(user.Password))
+        {
+            ModelState.Remove("Password");
+            ModelState.Remove("ConfirmPassword");
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                // Update fields
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
+                existingUser.Phone = user.Phone;
+                existingUser.Address = user.Address;
+                existingUser.PostalCode = user.PostalCode;
+                existingUser.Status = user.Status;
+
+                // If new password entered, hash and save it
+                if (!string.IsNullOrEmpty(user.Password))
+                {
+                    // Replace this with your real hashing method
+                    existingUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                }
+
+                // Handle profile image upload
+
+
+                _context.Update(existingUser);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Edit", new { id = user.UserId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Update failed: " + ex.Message);
+            }
+        }
+
+        return View(user);
+    }
 }

@@ -5,7 +5,7 @@
 namespace sdrproj.Migrations
 {
     /// <inheritdoc />
-    public partial class wishlishDb : Migration
+    public partial class wishlistDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

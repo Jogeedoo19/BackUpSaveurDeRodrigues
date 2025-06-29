@@ -152,7 +152,15 @@ else
                                     }
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Profile</a></li>
+                                    @{
+    var userId = Context.Session.GetString("UserId");
+}
+@if (userId != null)
+{
+    <li>
+        <a class="dropdown-item" asp-controller="UserAccount" asp-action="Edit" asp-route-id="@userId">Edit Profile</a>
+    </li>
+}
                                     <li><a class="dropdown-item" asp-controller="User" asp-action="Settings">Settings</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="UserAccount" asp-action="Logout">Logout</a></li>

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace sdrproj.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250629145404_wishlishDb")]
-    partial class wishlishDb
+    [Migration("20250629161418_wishlistDB1")]
+    partial class wishlistDB1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
