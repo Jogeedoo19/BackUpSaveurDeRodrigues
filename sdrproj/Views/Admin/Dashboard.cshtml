@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-3">
+                <i class="fas fa-tachometer-alt mr-2"></i>
+                Admin Dashboard
+            </h1>
+            <p class="text-muted">Manage users and merchants from this central dashboard</p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@ViewBag.TotalUsers</h4>
+                            <h6 class="card-subtitle">Total Users</h6>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Users")">
+                        View Details
+                    </a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@ViewBag.ActiveUsers</h4>
+                            <h6 class="card-subtitle">Active Users</h6>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-user-check fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Users")">
+                        View Details
+                    </a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@ViewBag.TotalMerchants</h4>
+                            <h6 class="card-subtitle">Total Merchants</h6>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-store fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Merchants")">
+                        View Details
+                    </a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@(ViewBag.BlockedUsers + ViewBag.BlockedMerchants)</h4>
+                            <h6 class="card-subtitle">Blocked Accounts</h6>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-ban fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <span class="small text-white">Requires Attention</span>
+                    <div class="small text-white"><i class="fas fa-exclamation-triangle"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt mr-2"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Users")" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-users mr-2"></i>
+                                    Manage Users
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Merchants")" class="btn btn-outline-warning btn-lg">
+                                    <i class="fas fa-store mr-2"></i>
+                                    Manage Merchants
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Index", "AdminCategory")" class="btn btn-outline-success btn-lg">
+                                    <i class="fas fa-list-alt mr-2"></i>
+                                    Manage Categories
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Overview -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-users mr-2"></i>
+                        User Status Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="p-3">
+                                <h3 class="text-success">@ViewBag.ActiveUsers</h3>
+                                <p class="text-muted mb-0">Active</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3">
+                                <h3 class="text-danger">@ViewBag.BlockedUsers</h3>
+                                <p class="text-muted mb-0">Blocked</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress mt-3">
+                        <div class="progress-bar bg-success" role="progressbar"
+                             style="width: @(ViewBag.TotalUsers > 0 ? (ViewBag.ActiveUsers * 100 / ViewBag.TotalUsers) : 0)%">
+                        </div>
+                        <div class="progress-bar bg-danger" role="progressbar"
+                             style="width: @(ViewBag.TotalUsers > 0 ? (ViewBag.BlockedUsers * 100 / ViewBag.TotalUsers) : 0)%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-store mr-2"></i>
+                        Merchant Status Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="p-3">
+                                <h3 class="text-success">@ViewBag.ActiveMerchants</h3>
+                                <p class="text-muted mb-0">Active</p>
+                            </div>
+                        </div>

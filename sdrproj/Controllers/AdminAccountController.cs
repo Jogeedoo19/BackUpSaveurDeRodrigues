@@ -21,7 +21,7 @@ namespace sdrproj.Controllers
         {
             if (HttpContext.Session.GetInt32("AdminId") != null)
             {
-                return RedirectToAction("Index", "AdminDashboard");
+                return RedirectToAction("Dashboard", "Admin");
             }
 
             ViewBag.SuccessMessage = TempData["SuccessMessage"];
@@ -37,7 +37,7 @@ namespace sdrproj.Controllers
         {
             if (HttpContext.Session.GetInt32("AdminId") != null)
             {
-                return RedirectToAction("Index", "AdminDashboard");
+                return RedirectToAction("Dashboard", "Admin");
             }
 
             try
@@ -50,7 +50,7 @@ namespace sdrproj.Controllers
                     HttpContext.Session.SetString("AdminEmail", admin.Email);
 
                     TempData["WelcomeMessage"] = "Welcome to Admin Dashboard!";
-                    return RedirectToAction("Index", "AdminDashboard");
+                    return RedirectToAction("Dashboard", "Admin");
                 }
 
                 ViewBag.Error = "Invalid admin credentials.";
