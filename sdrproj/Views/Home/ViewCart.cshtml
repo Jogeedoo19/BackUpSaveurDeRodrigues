@@ -14,24 +14,21 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+<br />
+<br />
+<br />
+<br />
 
 <!-- Cart Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
-        <div class="mb-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item"><a asp-action="ViewProduct">Products</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
-                </ol>
-            </nav>
-        </div>
+        
 
         <div class="row">
             <div class="col-lg-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="mb-0">Shopping Cart</h1>
+                    
+
                     @if (Model.Any())
                 {
                     <div class="table-responsive">
@@ -66,12 +63,13 @@
                                             <small class="text-success">Stock: @item.Product.Stock available</small>
                                         </td>
                                         <td>
-                                            <p class="mb-0 mt-4">$@item.Product.Price</p>
+                                            <p class="mb-0 mt-4">Rs @item.Product.Price</p>
                                         </td>
                                         <td>
                                             <div class="input-group quantity mt-4" style="width: 100px;">
                                                 <div class="input-group-btn">
                                                     <form asp-action="UpdateCartQuantity" method="post" class="d-inline">
+                                                          @Html.AntiForgeryToken()
                                                         <input type="hidden" name="cartId" value="@item.CartId" />
                                                         <input type="hidden" name="count" value="@(item.Count - 1)" />
                                                         <button class="btn btn-sm btn-minus rounded-circle bg-light border" 
@@ -83,6 +81,7 @@
                                                 <span class="form-control form-control-sm text-center border-0">@item.Count</span>
                                                 <div class="input-group-btn">
                                                     <form asp-action="UpdateCartQuantity" method="post" class="d-inline">
+                                                          @Html.AntiForgeryToken()
                                                         <input type="hidden" name="cartId" value="@item.CartId" />
                                                         <input type="hidden" name="count" value="@(item.Count + 1)" />
                                                         <button class="btn btn-sm btn-plus rounded-circle bg-light border" 
@@ -94,7 +93,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="mb-0 mt-4">$@((item.Product.Price * item.Count).ToString("F2"))</p>
+                                            <p class="mb-0 mt-4">Rs @((item.Product.Price * item.Count).ToString("F2"))</p>
                                         </td>
                                         <td>
                                             @* <form asp-action="RemoveFromCart" method="post" class="d-inline">
@@ -106,7 +105,7 @@
                                             </form> *@
 
 
-                                            <a asp-controller="Home" asp-action="Remove" asp-route-id="@item.CartId" class="btn btn-sm btn-outline-success">Remove </a>
+                                            <a asp-controller="Home" asp-action="RemoveFromCart" asp-route-id="@item.CartId" class="btn btn-sm btn-outline-success">Remove </a>
 
                                         </td>
                                     </tr>
@@ -116,7 +115,7 @@
                     </div>
 
                     <!-- Cart Summary -->
-                    <div class="mt-5">
+                    <div class="col-md-5 mt-5">
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="bg-light rounded p-4">
@@ -132,7 +131,7 @@
                                     <h5>Cart Summary</h5>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Items (@itemCount):</span>
-                                        <span>$@cartTotal.ToString("F2")</span>
+                                        <span>Rs @cartTotal.ToString("F2")</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Shipping:</span>
@@ -140,12 +139,12 @@
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Tax:</span>
-                                        <span>$@((cartTotal * 0.1m).ToString("F2"))</span>
+                                        <span>Rs @((cartTotal * 0.1m).ToString("F2"))</span>
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between mb-3">
                                         <strong>Total:</strong>
-                                        <strong>$@((cartTotal * 1.1m).ToString("F2"))</strong>
+                                        <strong>Rs @((cartTotal * 1.1m).ToString("F2"))</strong>
                                     </div>
                                     <a asp-action="Checkout" class="btn btn-success w-100">
                                         <i class="fa fa-credit-card me-2"></i>Proceed to Checkout
@@ -192,7 +191,7 @@
     });
 </script>
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Shopping Cart</h1>
+   
     @if (Model.Any())
     {
         <div>

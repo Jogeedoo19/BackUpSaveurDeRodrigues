@@ -23,7 +23,7 @@ namespace sdrproj.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(p => p.Name.Contains(searchString) ||
-                                              p.Description.Contains(searchString));
+                                               p.Description.Contains(searchString));
             }
 
             return View(await products.ToListAsync());
@@ -43,6 +43,7 @@ namespace sdrproj.Controllers
         }
 
         // Cart Methods
+       
         public async Task<IActionResult> AddToCart(int productId, int count = 1)
         {
             var product = await _context.Products.FindAsync(productId);
@@ -54,26 +55,21 @@ namespace sdrproj.Controllers
 
             if (product.Stock < count)
             {
-                TempData["CartMessage"] = "Product added to cart successfully!";
+                TempData["CartMessage"] = "Not enough stock available.";
                 return RedirectToAction("ViewProduct");
-
             }
 
-            // For demo purposes, using a session-based user ID
-            // In production, you'd use actual user authentication
-            string userId = GetOrCreateSessionUserId();
+            int userId = GetOrCreateSessionUserId();
 
             var existingCartItem = await _context.Carts
                 .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
 
             if (existingCartItem != null)
             {
-                // Update existing cart item
                 if (existingCartItem.Count + count > product.Stock)
                 {
-                    TempData["CartMessage"] = "Product added to cart successfully!";
+                    TempData["CartMessage"] = "Insufficient stock for requested quantity.";
                     return RedirectToAction("ViewProduct");
-
                 }
 
                 existingCartItem.Count += count;
@@ -82,7 +78,6 @@ namespace sdrproj.Controllers
             }
             else
             {
-                // Add new cart item
                 var cartItem = new Cart
                 {
                     UserId = userId,
@@ -91,18 +86,19 @@ namespace sdrproj.Controllers
                     AddedDateTime = DateTime.Now
                 };
                 _context.Carts.Add(cartItem);
+
             }
+            product.Stock -= count;
+            _context.Products.Update(product);
 
             await _context.SaveChangesAsync();
             TempData["CartMessage"] = "Product added to cart successfully!";
-
             return RedirectToAction("ViewCart");
-
         }
 
         public async Task<IActionResult> ViewCart()
         {
-            string userId = GetOrCreateSessionUserId();
+            int userId = GetOrCreateSessionUserId();
 
             var cartItems = await _context.Carts
                 .Include(c => c.Product)
@@ -110,7 +106,6 @@ namespace sdrproj.Controllers
                 .OrderByDescending(c => c.AddedDateTime)
                 .ToListAsync();
 
-            // Calculate total
             decimal total = cartItems.Sum(c => c.Product.Price * c.Count);
             ViewBag.CartTotal = total;
             ViewBag.ItemCount = cartItems.Sum(c => c.Count);
@@ -118,6 +113,8 @@ namespace sdrproj.Controllers
             return View(cartItems);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Optional but recommended for security
         public async Task<IActionResult> UpdateCartQuantity(int cartId, int count)
         {
             if (count < 1)
@@ -135,7 +132,6 @@ namespace sdrproj.Controllers
                 return RedirectToAction("ViewCart");
             }
 
-            // Check stock availability
             if (count > cartItem.Product.Stock)
             {
                 TempData["CartMessage"] = $"Only {cartItem.Product.Stock} items available in stock.";
@@ -149,46 +145,29 @@ namespace sdrproj.Controllers
 
             TempData["CartMessage"] = "Cart updated successfully!";
             return RedirectToAction("ViewCart");
-
-
-
-
-
         }
+
+
 
         public async Task<IActionResult> RemoveFromCart(int id)
         {
-            //var cartItem = await _context.Carts.FindAsync(cartId);
-            //if (cartItem == null)
-            //{
-            //    TempData["CartMessage"] = "Cart item not found.";
-            //    return RedirectToAction("ViewCart");
-            //}
-
-            //_context.Carts.Remove(cartItem);
-            //await _context.SaveChangesAsync();
-
-            //TempData["CartMessage"] = "Item removed from cart.";
-            //return RedirectToAction("ViewCart");
-
-            var wishlistItem = await _context.Carts.FindAsync(id);
-            if (wishlistItem == null)
+            var cartItem = await _context.Carts.FindAsync(id);
+            if (cartItem == null)
             {
-                TempData["WishlistMessage"] = "Item not found in wishlist.";
+                TempData["CartMessage"] = "Cart item not found.";
                 return RedirectToAction("ViewCart");
             }
 
-            _context.Carts.Remove(wishlistItem);
+            _context.Carts.Remove(cartItem);
             await _context.SaveChangesAsync();
 
-            TempData["WishlistMessage"] = "Item removed from wishlist.";
+            TempData["CartMessage"] = "Item removed from cart.";
             return RedirectToAction("ViewCart");
-
         }
 
         public async Task<IActionResult> ClearCart()
         {
-            string userId = GetOrCreateSessionUserId();
+            int userId = GetOrCreateSessionUserId();
 
             var cartItems = await _context.Carts
                 .Where(c => c.UserId == userId)
@@ -204,10 +183,9 @@ namespace sdrproj.Controllers
             return RedirectToAction("ViewCart");
         }
 
-        // Get cart item count for display in navigation
         public async Task<IActionResult> GetCartItemCount()
         {
-            string userId = GetOrCreateSessionUserId();
+            int userId = GetOrCreateSessionUserId();
 
             var itemCount = await _context.Carts
                 .Where(c => c.UserId == userId)
@@ -216,22 +194,13 @@ namespace sdrproj.Controllers
             return Json(itemCount);
         }
 
-        // Helper method to get or create session-based user ID
-        private string GetOrCreateSessionUserId()
+        private int GetOrCreateSessionUserId()
         {
-            string sessionKey = "SessionUserId";
-            string userId = HttpContext.Session.GetString(sessionKey);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                userId = Guid.NewGuid().ToString();
-                HttpContext.Session.SetString(sessionKey, userId);
-            }
-
-            return userId;
+            // Simulate logged-in user. Replace with real authentication in production.
+            return 1;
         }
 
-        // Existing wishlist methods
+        // Wishlist methods
         public async Task<IActionResult> Add(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -241,16 +210,14 @@ namespace sdrproj.Controllers
                 return RedirectToAction("ViewProduct");
             }
 
-            // Using session-based user ID for wishlist too
-            string userId = GetOrCreateSessionUserId();
-
             bool exists = _context.WishList.Any(w => w.ProductId == id);
             if (!exists)
             {
                 var wishlistItem = new WishList
                 {
                     ProductId = id,
-                    TimeAdd = DateTime.Now
+                    TimeAdd = DateTime.Now,
+                    UserId = GetOrCreateSessionUserId()
                 };
 
                 _context.WishList.Add(wishlistItem);
@@ -291,7 +258,7 @@ namespace sdrproj.Controllers
             return RedirectToAction("ViewWishlist");
         }
 
-        // Existing action methods
+        // Default Pages
         public IActionResult Index()
         {
             return View();

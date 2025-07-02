@@ -16,5 +16,8 @@ namespace sdrproj.Models
         public Product Product { get; set; }
 
         public DateTime TimeAdd { get; set; } = DateTime.Now;
+        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; } = null!;
     }
 }

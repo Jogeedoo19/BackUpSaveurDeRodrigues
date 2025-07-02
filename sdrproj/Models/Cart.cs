@@ -9,7 +9,9 @@ namespace sdrproj.Models
         public int CartId { get; set; }
 
         [Required(ErrorMessage = "User is required")]
-        public string UserId { get; set; } = string.Empty; 
+        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; } = null!;
 
         [Required(ErrorMessage = "Product is required")]
         public int ProductId { get; set; }
