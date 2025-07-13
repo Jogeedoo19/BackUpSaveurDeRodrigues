@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<WishList> WishList { get; set; }
     public DbSet<Cart> Carts { get; set; }
+    public DbSet<OrderHeader> OrderHeaders { get; set; }
+    public DbSet<OrderDetail> OrderDetails { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

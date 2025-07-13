@@ -1,0 +1,86 @@
+﻿@model IEnumerable<sdrproj.Models.OrderHeader>
+@{
+    ViewData["Title"] = "My Orders";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div class="container py-5">
+    <h2 class="mb-4">My Orders</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">You haven't placed any orders yet.</div>
+    }
+    else
+    {
+        foreach (var order in Model)
+        {
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                    <div>
+                        <strong>Order #@order.OrderHeaderId</strong> <br />
+                        <small class="text-muted">Placed on @order.OrderDate.ToString("dd MMM yyyy")</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary">@order.OrderStatus</span>
+                        <span class="badge @(order.PaymentStatus == "Paid" ? "bg-success" : "bg-warning text-dark")">
+                            @order.PaymentStatus
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Total:</strong> Rs @order.TotalAmount.ToString("F2")</p>
+                    @if (!string.IsNullOrEmpty(order.TrackingNumber))
+                    {
+                        <p><strong>Tracking No:</strong> @order.TrackingNumber</p>
+                    }
+
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in order.OrderDetails)
+                            {
+                                <tr>
+                                    <td>@item.Product.Name</td>
+                                    <td>@item.Quantity</td>
+                                    <td>Rs @item.UnitPrice.ToString("F2")</td>
+                                    <td>Rs @(item.UnitPrice* item.Quantity)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @if (!string.IsNullOrEmpty(order.ReceiptUrl))
+                    {
+                        <a href="@order.ReceiptUrl" target="_blank" class="btn btn-outline-secondary btn-sm">
+                            View Receipt
+                        </a>
+                    }
+
+                    @if (order.OrderStatus == "Pending")
+                    {
+                        <a asp-controller="Cart" asp-action="CancelOrder" asp-route-id="@order.OrderHeaderId"
+                           class="btn btn-danger btn-sm ms-2"
+                           onclick="return confirm('Are you sure you want to cancel this order?');">
+                            Cancel Order
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

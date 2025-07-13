@@ -163,5 +163,79 @@ namespace sdrproj.Controllers
 
             return View(Dashboard);
         }
+
+        // View all users
+        public async Task<IActionResult> ViewUsers()
+        {
+            var users = await _context.Users.OrderByDescending(u => u.CreatedAt).ToListAsync();
+            return View(users);
+        }
+
+        // View all merchants
+        public async Task<IActionResult> ViewMerchants()
+        {
+            var merchants = await _context.Merchants.OrderByDescending(m => m.CreatedAt).ToListAsync();
+            return View(merchants);
+        }
+
+        // View all products/items
+        public async Task<IActionResult> ViewItems()
+        {
+            var products = await _context.Products
+                .Include(p => p.SubCategory)
+                .OrderByDescending(p => p.Stock)
+                .ToListAsync();
+            return View(products);
+        }
+        // GET: Admin/ViewUsers/getall
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _context.Users.Select(u => new {
+                u.UserId,
+                u.Name,
+                u.Email,
+                u.Phone,
+                u.Status,
+                RegisteredOn = u.CreatedAt.ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Json(new { data = users });
+        }
+
+        // GET: Admin/ViewMerchants/getall
+        [HttpGet]
+        public IActionResult GetAllMerchants()
+        {
+            var merchants = _context.Merchants.Select(m => new {
+                m.MerchantId,
+                m.Name,
+                m.Email,
+                m.Phone,
+                m.Status,
+                RegisteredOn = m.CreatedAt.ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Json(new { data = merchants });
+        }
+
+        // GET: Admin/ViewItems/getall
+        [HttpGet]
+        public IActionResult GetAllItems()
+        {
+            var products = _context.Products.Include(p => p.SubCategory)
+                .Select(p => new {
+                    p.ProductId,
+                    p.Name,
+                    p.Description,
+                    p.Price,
+                    p.Stock,
+                    SubCategory = p.SubCategory.Name
+                }).ToList();
+
+            return Json(new { data = products });
+        }
+
+
     }
 }

@@ -178,4 +178,90 @@ public class MerchantAccountController : Controller
     {
         return context.Session.GetInt32("MerchantId") != null; // Changed to GetInt32
     }
+
+
+
+    // GET: Merchant/Edit/{id}
+    public IActionResult Edit(int id)
+    {
+        var merchant = _context.Merchants.FirstOrDefault(m => m.MerchantId == id);
+        if (merchant == null)
+        {
+            return NotFound();
+        }
+
+        // You can optionally clear the ConfirmPassword field to avoid showing it filled
+        merchant.ConfirmPassword = merchant.Password;
+
+        return View(merchant);
+    }
+    // POST: Merchant/Edit/{id}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Merchant merchant, IFormFile profileImage)
+    {
+        var existingMerchant = _context.Merchants.FirstOrDefault(m => m.MerchantId == merchant.MerchantId);
+        if (existingMerchant == null)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                // Update profile image if provided
+                if (profileImage != null && profileImage.Length > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                    var extension = Path.GetExtension(profileImage.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(extension))
+                    {
+                        ModelState.AddModelError("ProfilePicture", "Only JPG and PNG files are allowed.");
+                        return View(merchant);
+                    }
+
+                    var fileName = $"{Guid.NewGuid()}{extension}";
+                    var filePath = Path.Combine(_hostEnvironment.WebRootPath, "images/Merchants", fileName);
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await profileImage.CopyToAsync(stream);
+                    }
+
+                    existingMerchant.ProfileImagePath = "/images/Merchants/" + fileName;
+                }
+
+                // Update fields
+                existingMerchant.Name = merchant.Name;
+                existingMerchant.Email = merchant.Email;
+                existingMerchant.Phone = merchant.Phone;
+                existingMerchant.Address = merchant.Address;
+                existingMerchant.PostalCode = merchant.PostalCode;
+                existingMerchant.Status = merchant.Status;
+
+                // Update password only if changed (rehash)
+                if (!BCrypt.Net.BCrypt.Verify(merchant.Password, existingMerchant.Password))
+                {
+                    existingMerchant.Password = BCrypt.Net.BCrypt.HashPassword(merchant.Password);
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Profile updated successfully!";
+                return RedirectToAction("Edit", new { id = merchant.MerchantId });
+            }
+            catch
+            {
+                ViewBag.Error = "An error occurred while updating the profile.";
+            }
+        }
+
+        return View(merchant);
+    }
+
+
+
+
 }

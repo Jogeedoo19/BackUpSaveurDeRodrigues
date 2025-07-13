@@ -1,0 +1,41 @@
+﻿@model IEnumerable<User>
+@{
+    ViewData["Title"] = "All Users";
+}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<h2>All Registered Users</h2>
+<table id="tbldata" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Registered On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.Phone</td>
+                <td>@user.Status</td>
+                <td>@user.CreatedAt.ToString("dd MMM yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script src="~/js/Users.js"></script>
+}

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "All Products";
+}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<h2>All Listed Products</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+      
+            <th>Name</th>
+            <th>Subcategory</th>
+            <th>Price</th>
+            <th>Stock</th>
+          
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+              
+                <td>@product.Name</td>
+                <td>@product.SubCategory?.Name</td>
+                <td>Rs @product.Price</td>
+                <td>@product.Stock</td>
+              
+            </tr>
+        }
+    </tbody>
+</table>

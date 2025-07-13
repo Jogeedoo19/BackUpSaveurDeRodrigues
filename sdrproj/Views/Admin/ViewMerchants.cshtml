@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Merchant>
+
+@{
+    ViewData["Title"] = "All Merchants";
+}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<h2>All Registered Merchants</h2>
+
+<table id="tbldatam" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+          
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Registered On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var merchant in Model)
+        {
+            <tr>
+             
+                <td>@merchant.Name</td>
+                <td>@merchant.Email</td>
+                <td>@merchant.Phone</td>
+                <td>@merchant.Status</td>
+                <td>@merchant.CreatedAt.ToString("dd MMM yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script src="~/js/Merchants.js"></script>
+}

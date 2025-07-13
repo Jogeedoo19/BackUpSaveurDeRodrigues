@@ -2,17 +2,15 @@
 @{
     ViewData["Title"] = "Edit Profile";
 }
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
 
-
-
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -22,7 +20,7 @@
                     <h4 class="mb-0">Edit Profile</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Edit" method="post">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="UserId" />
 
@@ -36,6 +34,18 @@
                             <label asp-for="Email" class="form-label"></label>
                             <input asp-for="Email" class="form-control" />
                             <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -57,6 +67,17 @@
                         </div>
 
                         <div class="mb-3">
+                            <label asp-for="ProfileImagePath" class="form-label">Profile Image</label>
+                            <input type="file" name="ProfileImage" class="form-control" />
+                            @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                            {
+                                <div class="mt-2">
+                                    <img src="@Url.Content(Model.ProfileImagePath)" alt="Profile Image" width="100" class="img-thumbnail" />
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
                             <label asp-for="Status" class="form-label"></label>
                             <select asp-for="Status" class="form-select">
                                 <option value="Active">Active</option>
@@ -65,9 +86,8 @@
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
 
-
                         <div class="d-flex justify-content-between">
-                            <a asp-controller="Home" asp-action="Index"  class="btn btn-secondary">Cancel</a>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-success">Save Changes</button>
                         </div>
                     </form>

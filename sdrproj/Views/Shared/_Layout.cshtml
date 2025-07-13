@@ -20,12 +20,16 @@
     <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css " />
+
 </head>
 
 
@@ -40,157 +44,169 @@
         <div class="container topbar bg-primary d-none d-lg-block">
             <div class="d-flex justify-content-between">
                 <div class="top-info ps-2">
-                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">Rodrigues</a></small>
-                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">saveurde.rodrigues@gmail.com</a></small>
+                    <small class="me-3">
+                        <i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                        <a href="https://maps.app.goo.gl/BcGYSA5wp8tsaPZr5" class="text-white">Rodrigues</a>
+                    </small>
+                    <small class="me-3">
+                        <i class="fas fa-envelope me-2 text-secondary"></i>
+                        <a href="#" class="text-white">saveurde.rodrigues@gmail.com</a>
+                    </small>
                 </div>
-                <div class="top-link pe-2">
-                    <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                     @if (Context.Session.GetString("AdminId") != null)
-{
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-            Admin
-        </a>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
-            <li><a class="dropdown-item" asp-controller="AdminAccount" asp-action="Logout">Logout</a></li>
-        </ul>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link" asp-controller="AdminAccount" asp-action="Login"><small class="text-white ms-2">Admin</small></a>
-    </li>
-}
+                <div class="top-link pe-2 d-flex gap-3">
+                    <!-- Admin Dropdown -->
+                    @{
+                        var adminId = Context.Session.GetInt32("AdminId"); // Assuming AdminId is stored in session
+                    }
+                    <div class="dropdown">
+                        <a class="dropdown-toggle d-flex align-items-center text-white text-decoration-none" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield me-1"></i> Admin
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="adminDropdown">
+                            @if (adminId == null)
+                            {
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="AdminAccount" asp-action="Login">
+                                        <i class="fas fa-sign-in-alt me-2 text-primary"></i>Login
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 fw-semibold text-danger" asp-controller="AdminAccount" asp-action="Logout">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
 
-                  
- <div class="dropdown ms-3">
-        <a class="dropdown-toggle d-flex align-items-center text-white text-decoration-none"
-           href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-user me-1"></i>
-            <span>Merchant</span>
-        </a>
-         @if (Context.Session.GetString("MerchantId") != null)
-                        {
-                            <!-- User is logged in - Show user info and logout -->
-                         
-                                <a class="nav-item nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                    @if (!string.IsNullOrEmpty(Context.Session.GetString("Name")))
-                                    {
-                                        <span>Welcome, @Context.Session.GetString("Name")</span>
-                                    }
-                                    else
-                                    {
-                                        <span>My Account</span>
-                                    }
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Merchant" asp-action="Profile">Profile</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Merchant" asp-action="Settings">Settings</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="MerchantAccount" asp-action="Logout">Logout</a></li>
-                                </ul>
-                            
-                        }
-                        else
-                        {
-        <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item py-2" asp-controller="MerchantAccount" asp-action="Register">Register</a></li>
-            <li><a class="dropdown-item py-2" asp-controller="MerchantAccount" asp-action="Login">Login</a></li>
-        </ul>
-                        }
-    </div>
+
+
+
+                    <!-- Merchant Dropdown -->
+                    @{
+                        var merchantId = Context.Session.GetInt32("MerchantId");
+                    }
+                    <div class="dropdown">
+                        <a class="dropdown-toggle d-flex align-items-center text-white text-decoration-none" href="#" id="merchantDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-store me-1"></i> Merchant
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="merchantDropdown">
+                            @if (merchantId == null)
+                            {
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="MerchantAccount" asp-action="Register">
+                                        <i class="fas fa-user-plus me-2 text-primary"></i>Register
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="MerchantAccount" asp-action="Login">
+                                        <i class="fas fa-sign-in-alt me-2 text-primary"></i>Login
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="MerchantAccount" asp-action="Edit" asp-route-id="@merchantId">
+                                        <i class="fas fa-user-edit me-2 text-primary"></i>Edit Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 fw-semibold text-danger" asp-controller="MerchantAccount" asp-action="Logout">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+
+
+
+                    <!-- User Dropdown -->
+                    @{
+                        var userId = Context.Session.GetString("UserId");
+                        var userName = Context.Session.GetString("Name");
+                    }
+                    @if (userId != null)
+                    {
+                        <div class="dropdown">
+                            <a class="dropdown-toggle d-flex align-items-center text-white text-decoration-none" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user me-1"></i> @(!string.IsNullOrEmpty(userName) ? userName : "User")
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="UserAccount" asp-action="Edit" asp-route-id="@userId"><i class="fas fa-user-edit me-2 text-primary"></i>Edit Profile</a></li>
+                                <li><a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="Cart" asp-action="ViewProduct"><i class="fas fa-box me-2 text-primary"></i>My Products</a></li>
+                                <li><a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="Home" asp-action="ViewWishList"><i class="fas fa-heart me-2 text-primary"></i>Wishlist</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item py-2 px-3 fw-semibold text-danger" asp-controller="UserAccount" asp-action="Logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="dropdown">
+                            <a class="dropdown-toggle d-flex align-items-center text-white text-decoration-none" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user me-1"></i> User
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="UserAccount" asp-action="Register"><i class="fas fa-user-plus me-2 text-primary"></i>Register</a></li>
+                                <li><a class="dropdown-item py-2 px-3 fw-semibold" asp-controller="UserAccount" asp-action="Login"><i class="fas fa-sign-in-alt me-2 text-primary"></i>Login</a></li>
+                            </ul>
+                        </div>
+                    }
+
                 </div>
             </div>
         </div>
+
         <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Saveur De Rodrigues</h1></a>
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="text-primary display-6">Saveur De Rodrigues</h1>
+                </a>
                 <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars text-primary"></span>
                 </button>
                 <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                     <div class="navbar-nav mx-auto">
                         <a class="nav-item nav-link active" asp-controller="Home" asp-action="Index">Home</a>
-                       @if (Context.Session.GetString("UserId") != null)
-                        {
-
-                            <a class="nav-item nav-link" asp-controller="Home" asp-action="ViewProduct"">Shop</a>
-                        }
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Shop">Shop</a>
                         <a class="nav-item nav-link" asp-controller="Home" asp-action="ShopDetail">Shop Detail</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                <!--  <a class="dropdown-item" asp-controller="AdminCategory" asp-action="Index">Category</a>-->
 
-                               <!-- <a class="dropdown-item" asp-controller="Home" asp-action="ViewProduct">Cart</a>-->
-                               
-
+                                
+                                <a class="dropdown-item" asp-controller="Cart" asp-action="ViewCart">Cart</a>
                                 <a class="dropdown-item" asp-controller="Home" asp-action="Checkout">Checkout</a>
                                 <a class="dropdown-item" asp-controller="Home" asp-action="Testimonial">Testimonial</a>
-                                 @if (Context.Session.GetString("MerchantId") != null)
-                        {
-                                <a class="dropdown-item" asp-controller="MerchantProduct" asp-action="Index">Product</a>
-                        }
+                                @if (Context.Session.GetString("MerchantId") != null)
+                                {
+                                    <a class="dropdown-item" asp-controller="MerchantProduct" asp-action="Index">Product</a>
+                                }
                             </div>
                         </div>
-                        <a class="nav-item nav-link" asp-controller="ContactUs" asp-action="Create">Contact</a>
-                        @if (Context.Session.GetString("UserId") != null)
-                        {
-                            <!-- User is logged in - Show user info and logout -->
-                         
-                                <a class="nav-item nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                    @if (!string.IsNullOrEmpty(Context.Session.GetString("Name")))
-                                    {
-                                        <span>Welcome, @Context.Session.GetString("Name")</span>
-                                    }
-                                    else
-                                    {
-                                        <span>My Account</span>
-                                    }
-                                </a>
-                                <ul class="dropdown-menu">
-                                    @{
-    var userId = Context.Session.GetString("UserId");
-}
-@if (userId != null)
-{
-    <li>
-        <a class="dropdown-item" asp-controller="UserAccount" asp-action="Edit" asp-route-id="@userId">Edit Profile</a>
-    </li>
-}
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Settings">Settings</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="UserAccount" asp-action="Logout">Logout</a></li>
-                                </ul>
-                            
-                        }
-                        else
-                        {
-                        <a class="nav-item nav-link" asp-controller="UserAccount" asp-action="Register">Register</a>
-                        <a class="nav-item nav-link" asp-controller="UserAccount" asp-action="Login">Login</a>
-                        }
-
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="ContactUs">Contact</a>
                     </div>
-
                     <div class="d-flex m-3 me-0">
-                       
-                        <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                        <a asp-controller="Home" asp-action="ViewCart" class="position-relative me-4 my-auto">
+                        <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal">
+                            <i class="fas fa-search text-primary"></i>
+                        </button>
+                        <a href="#" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
                             <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
                         </a>
-                        <a href="#" class="my-auto">
-                            <i class="fas fa-user fa-2x"> </i>
-                              
-                        </a>
+                        
                     </div>
                 </div>
             </nav>
         </div>
     </div>
+
     <!-- Navbar End -->
 
 
@@ -309,21 +325,27 @@ else
     <script src="~/lib/lightbox/js/lightbox.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
     <!-- Mapbox GL JS & CSS -->
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
 
-<!-- Mapbox Geocoder Plugin -->
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.1.2/mapbox-gl-geocoder.min.js"></script>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.1.2/mapbox-gl-geocoder.css" />
+    <!-- Mapbox Geocoder Plugin -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.1.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.1.2/mapbox-gl-geocoder.css" />
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdn.datatables.net/2.3.2/js/dataTables.min.js"
+            asp-append-version="true"></script>
+
+
     <script src="https://cdn.tiny.cloud/1/83g40wjxltcnwft1a2euqot5gb4gals43zcy5p3zmc4ycwbo/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     @RenderSection("Scripts", required: false)
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />
     }
-    
+
 
 
 </body>
