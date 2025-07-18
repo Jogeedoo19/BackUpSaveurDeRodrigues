@@ -187,6 +187,7 @@
                                 @if (Context.Session.GetString("MerchantId") != null)
                                 {
                                     <a class="dropdown-item" asp-controller="MerchantProduct" asp-action="Index">Product</a>
+                                    <a class="dropdown-item" asp-controller="MerchantOrder" asp-action="ViewOrders">Order</a>
                                 }
                             </div>
                         </div>

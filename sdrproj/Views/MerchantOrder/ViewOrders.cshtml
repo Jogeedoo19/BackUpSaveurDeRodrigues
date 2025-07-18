@@ -1,0 +1,86 @@
+﻿@model IEnumerable<sdrproj.Models.OrderHeader>
+@{
+    ViewData["Title"] = "All Orders";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="container py-4">
+    <h2 class="mb-4">All Orders</h2>
+
+    @foreach (var order in Model)
+    {
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                <div>
+                    <strong>Order #@order.OrderHeaderId</strong><br />
+                    <small class="text-muted">Date: @order.OrderDate.ToString("dd MMM yyyy")</small><br />
+                    <small>User: @order.User.Name (@order.User.Email)</small>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-primary">@order.OrderStatus</span>
+                    <span class="badge @(order.PaymentStatus == "Paid" ? "bg-success" : "bg-warning text-dark")">
+                        @order.PaymentStatus
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p><strong>Total:</strong> Rs @order.TotalAmount.ToString("C")</p>
+                @if (!string.IsNullOrEmpty(order.TrackingNumber))
+                {
+                    <p><strong>Tracking No:</strong> @order.TrackingNumber</p>
+                }
+
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in order.OrderDetails)
+                        {
+                            <tr>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>Rs @item.UnitPrice.ToString("C")</td>
+                                <td>Rs @(item.UnitPrice* item.Quantity).ToString("F2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <form method="post" asp-action="UpdateOrderStatus" asp-route-id="@order.OrderHeaderId" class="d-inline">
+                    <select name="status" class="form-select d-inline w-auto">
+                        <option value="Pending" selected="@("Pending" == order.OrderStatus)">Pending</option>
+                        <option value="Paid" selected="@("Paid" == order.OrderStatus)">Paid</option>
+                        <option value="Shipped" selected="@("Shipped" == order.OrderStatus)">Shipped</option>
+                        <option value="Delivered" selected="@("Delivered" == order.OrderStatus)">Delivered</option>
+                        <option value="Cancelled" selected="@("Cancelled" == order.OrderStatus)">Cancelled</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Update Status</button>
+                </form>
+
+                @if (order.OrderStatus == "Paid")
+                {
+                    <form method="post" asp-action="MarkAsShipped" asp-route-id="@order.OrderHeaderId" class="d-inline ms-3">
+                        <input name="trackingNumber" placeholder="Tracking #" class="form-control d-inline w-auto" required />
+                        <button type="submit" class="btn btn-sm btn-warning ms-2">Mark as Shipped</button>
+                    </form>
+                }
+
+                @if (order.OrderStatus == "Shipped")
+                {
+                    <form method="post" asp-action="MarkAsDelivered" asp-route-id="@order.OrderHeaderId" class="d-inline ms-3">
+                        <button type="submit" class="btn btn-sm btn-success">Mark as Delivered</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+</div>
