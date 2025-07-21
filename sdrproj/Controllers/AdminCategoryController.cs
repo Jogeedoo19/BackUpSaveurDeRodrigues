@@ -128,10 +128,26 @@ namespace sdrproj.Controllers
         // GET: SubCategory/Create
         public IActionResult CreateSubCategory()
         {
-            ViewBag.Categories = _context.Categories
-                .OrderBy(c => c.Name)
-                .ToList();
-            return View();
+            try
+            {
+                var categories = _context.Categories.OrderBy(c => c.Name).ToList();
+                ViewBag.Categories = categories;
+
+                // Debug: Check if categories exist
+                Console.WriteLine($"Categories loaded: {categories.Count}");
+                foreach (var cat in categories)
+                {
+                    Console.WriteLine($"Category: {cat.CategoryId} - {cat.Name}");
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CreateSubCategory GET: {ex.Message}");
+                TempData["Error"] = "Error loading categories.";
+                return RedirectToAction("Index");
+            }
         }
 
         // POST: SubCategory/Create
@@ -139,24 +155,106 @@ namespace sdrproj.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateSubCategory(SubCategory subCategory)
         {
-            if (ModelState.IsValid)
+            Console.WriteLine("=== CreateSubCategory POST Method Called ===");
+            Console.WriteLine($"Received SubCategory - Name: '{subCategory?.Name}', CategoryId: {subCategory?.CategoryId}");
+
+            // Always reload categories for ViewBag in case we need to return the view
+            ViewBag.Categories = _context.Categories.OrderBy(c => c.Name).ToList();
+
+            try
             {
-                // Check if subcategory name already exists within the same category
-                if (_context.SubCategories.Any(sc => sc.Name.ToLower() == subCategory.Name.ToLower() && sc.CategoryId == subCategory.CategoryId))
+                // Check if subCategory object is null
+                if (subCategory == null)
                 {
-                    ModelState.AddModelError("Name", "SubCategory with this name already exists in the selected category");
-                    ViewBag.Categories = _context.Categories.OrderBy(c => c.Name).ToList();
+                    Console.WriteLine("SubCategory object is null!");
+                    TempData["Error"] = "SubCategory data is null";
+                    return View();
+                }
+
+                // Manual validation check
+                if (string.IsNullOrWhiteSpace(subCategory.Name))
+                {
+                    Console.WriteLine("Name is null or empty");
+                    ModelState.AddModelError("Name", "SubCategory name is required");
+                }
+
+                if (subCategory.CategoryId <= 0)
+                {
+                    Console.WriteLine("CategoryId is invalid");
+                    ModelState.AddModelError("CategoryId", "Please select a valid category");
+                }
+
+                // Check ModelState
+                Console.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+
+                if (!ModelState.IsValid)
+                {
+                    Console.WriteLine("ModelState Errors:");
+                    foreach (var error in ModelState)
+                    {
+                        Console.WriteLine($"  Key: {error.Key}");
+                        foreach (var err in error.Value.Errors)
+                        {
+                            Console.WriteLine($"    Error: {err.ErrorMessage}");
+                        }
+                    }
+
+                    TempData["Error"] = "Please fix the validation errors below";
                     return View(subCategory);
                 }
 
-                _context.SubCategories.Add(subCategory);
-                _context.SaveChanges();
-                TempData["Success"] = "SubCategory created successfully!";
-                return RedirectToAction("Index");
-            }
+                // Check if category exists
+                var categoryExists = _context.Categories.Any(c => c.CategoryId == subCategory.CategoryId);
+                if (!categoryExists)
+                {
+                    Console.WriteLine($"Category with ID {subCategory.CategoryId} does not exist");
+                    ModelState.AddModelError("CategoryId", "Selected category does not exist");
+                    return View(subCategory);
+                }
 
-            ViewBag.Categories = _context.Categories.OrderBy(c => c.Name).ToList();
-            return View(subCategory);
+                // Check for duplicate name in same category
+                var duplicate = _context.SubCategories
+                    .Any(sc => sc.Name.ToLower().Trim() == subCategory.Name.ToLower().Trim()
+                            && sc.CategoryId == subCategory.CategoryId);
+
+                if (duplicate)
+                {
+                    Console.WriteLine($"Duplicate subcategory name found");
+                    ModelState.AddModelError("Name", "SubCategory with this name already exists in the selected category");
+                    return View(subCategory);
+                }
+
+                // Clean the name
+                subCategory.Name = subCategory.Name.Trim();
+                subCategory.CreatedAt = DateTime.Now;
+
+                Console.WriteLine("Attempting to add subcategory to database...");
+                _context.SubCategories.Add(subCategory);
+
+                var saveResult = _context.SaveChanges();
+                Console.WriteLine($"SaveChanges completed. Rows affected: {saveResult}");
+
+                if (saveResult > 0)
+                {
+                    TempData["Success"] = $"SubCategory '{subCategory.Name}' created successfully!";
+                    Console.WriteLine("SubCategory created successfully, redirecting to Index");
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    Console.WriteLine("SaveChanges returned 0 - no rows affected");
+                    TempData["Error"] = "Failed to save subcategory to database";
+                    return View(subCategory);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
+                TempData["Error"] = $"Error creating subcategory: {ex.Message}";
+                return View(subCategory);
+            }
         }
 
         // GET: SubCategory/Edit/5

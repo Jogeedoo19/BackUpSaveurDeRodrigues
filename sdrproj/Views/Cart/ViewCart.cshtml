@@ -65,33 +65,39 @@
                                         <td>
                                             <p class="mb-0 mt-4">Rs @item.Product.Price</p>
                                         </td>
-                                        <td>
-                                            <div class="input-group quantity mt-4" style="width: 100px;">
-                                                <div class="input-group-btn">
-                                                    <form asp-action="UpdateCartQuantity" method="post" class="d-inline">
-                                                          @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="cartId" value="@item.CartId" />
-                                                        <input type="hidden" name="count" value="@(item.Count - 1)" />
-                                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border" 
-                                                                type="submit" @(item.Count <= 1 ? "disabled" : "")>
-                                                            <i class="fa fa-minus"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                <span class="form-control form-control-sm text-center border-0">@item.Count</span>
-                                                <div class="input-group-btn">
-                                                    <form asp-action="UpdateCartQuantity" method="post" class="d-inline">
-                                                          @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="cartId" value="@item.CartId" />
-                                                        <input type="hidden" name="count" value="@(item.Count + 1)" />
-                                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border" 
-                                                                type="submit" @(item.Count >= item.Product.Stock ? "disabled" : "")>
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </td>
+                                       <td>
+    <div class="input-group quantity mt-4" style="width: 100px;">
+        <div class="input-group-btn">
+            <form asp-action="UpdateCartQuantity" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="cartId" value="@item.CartId" />
+                <input type="hidden" name="count" value="@(item.Count - 1)" />
+                <button class="btn btn-sm btn-minus rounded-circle bg-light border" 
+                        type="submit" @(item.Count <= 1 ? "disabled" : "")
+                        onclick="this.form.submit(); this.disabled=true;">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </form>
+        </div>
+        <span class="form-control form-control-sm text-center border-0">@item.Count</span>
+        <div class="input-group-btn">
+            <form asp-action="UpdateCartQuantity" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="cartId" value="@item.CartId" />
+                <input type="hidden" name="count" value="@(item.Count + 1)" />
+                @{
+                    // Calculate available stock (current stock + current cart quantity)
+                    var availableForIncrease = item.Product.Stock;
+                }
+                <button class="btn btn-sm btn-plus rounded-circle bg-light border" 
+                        type="submit" @(availableForIncrease <= 0 ? "disabled" : "")
+                        onclick="this.form.submit(); this.disabled=true;">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</td>
                                         <td>
                                             <p class="mb-0 mt-4">Rs @((item.Product.Price * item.Count).ToString("F2"))</p>
                                         </td>

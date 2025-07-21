@@ -73,7 +73,7 @@ public class CartController : Controller
             TempData["WishlistMessage"] = "Product already in wishlist.";
         }
 
-        return RedirectToAction("Detail", "Home", new { id = id });
+        return RedirectToAction("Detail", "Cart", new { id = id });
     }
 
     public async Task<IActionResult> ViewWishlist()
@@ -143,7 +143,7 @@ public class CartController : Controller
         if (product == null || product.Stock < count)
         {
             TempData["CartMessage"] = "Product not found or insufficient stock.";
-            return RedirectToAction("ViewProduct", "Home");
+            return RedirectToAction("ViewProduct", "Cart");
         }
 
         int userId;
@@ -163,7 +163,7 @@ public class CartController : Controller
             if (existingCart.Count + count > product.Stock)
             {
                 TempData["CartMessage"] = "Not enough stock.";
-                return RedirectToAction("ViewProduct", "Home");
+                return RedirectToAction("ViewProduct", "Cart");
             }
 
             existingCart.Count += count;
@@ -202,31 +202,53 @@ public class CartController : Controller
             TempData["Error"] = "You must be logged in to view your cart.";
             return RedirectToAction("Login", "UserAccount");
         }
+
         if (count < 1)
             return await RemoveFromCart(cartId);
 
-        var cartItem = await _context.Carts.Include(c => c.Product).FirstOrDefaultAsync(c => c.CartId == cartId);
+        var cartItem = await _context.Carts
+            .Include(c => c.Product)
+            .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+
         if (cartItem == null)
         {
             TempData["CartMessage"] = "Cart item not found.";
             return RedirectToAction("ViewCart");
         }
 
-        if (count > cartItem.Product.Stock)
+        // Calculate the difference in quantity
+        int quantityDifference = count - cartItem.Count;
+
+        // Check if we're increasing quantity and if there's enough stock
+        if (quantityDifference > 0)
         {
-            TempData["CartMessage"] = "Not enough stock.";
-            return RedirectToAction("ViewCart");
+            // Check if there's enough stock for the increase
+            if (cartItem.Product.Stock < quantityDifference)
+            {
+                TempData["CartMessage"] = $"Only {cartItem.Product.Stock} more items available in stock.";
+                return RedirectToAction("ViewCart");
+            }
+
+            // Reduce stock by the increase amount
+            cartItem.Product.Stock -= quantityDifference;
+        }
+        else if (quantityDifference < 0)
+        {
+            // We're decreasing quantity, so restore stock
+            cartItem.Product.Stock += Math.Abs(quantityDifference);
         }
 
+        // Update cart item
         cartItem.Count = count;
         cartItem.AddedDateTime = DateTime.Now;
+
         _context.Carts.Update(cartItem);
+        _context.Products.Update(cartItem.Product);
         await _context.SaveChangesAsync();
 
-        TempData["CartMessage"] = "Cart updated.";
+        TempData["CartMessage"] = "Cart updated successfully.";
         return RedirectToAction("ViewCart");
     }
-
     public async Task<IActionResult> RemoveFromCart(int id)
     {
         int userId;

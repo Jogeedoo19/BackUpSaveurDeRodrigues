@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,9 +19,11 @@ namespace sdrproj.Models
         public int CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
-        public Category Category { get; set; }
+        public virtual Category? Category { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public virtual ICollection<Product> Products { get; set; }
+      
+        [ValidateNever]
+        public virtual ICollection<Product>? Products { get; set; }
     }
 }

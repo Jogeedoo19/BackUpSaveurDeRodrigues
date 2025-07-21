@@ -10,10 +10,21 @@
 <br />
 <br />
 <br />
+
+
 <br />
 <br />
 <br />
 <br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -22,11 +33,31 @@
                     <h3 class="card-title">Create New SubCategory</h3>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="AdminCategory" asp-action="CreateSubCategory" method="post">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <form asp-controller="AdminCategory" asp-action="CreateSubCategory" method="post" onsubmit="console.log('Form submitting...'); return true;">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Show ALL validation errors -->
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <h6>Validation Errors:</h6>
+                                <ul>
+                                    @foreach (var modelError in ViewData.ModelState)
+                                    {
+                                        foreach (var error in modelError.Value.Errors)
+                                        {
+                                            <li>@modelError.Key: @error.ErrorMessage</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        
+
                         <div class="mb-3">
                             <label asp-for="CategoryId" class="form-label">Select Category</label>
-                            <select asp-for="CategoryId" class="form-select" required>
+                            <select asp-for="CategoryId" class="form-select" required onchange="console.log('Category selected:', this.value)">
                                 <option value="">-- Select Category --</option>
                                 @if (ViewBag.Categories != null)
                                 {
@@ -35,17 +66,24 @@
                                         <option value="@category.CategoryId">@category.Name</option>
                                     }
                                 }
+                                else
+                                {
+                                    <option disabled>No categories available</option>
+                                }
                             </select>
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
+
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label">SubCategory Name</label>
-                            <input asp-for="Name" class="form-control" placeholder="Enter subcategory name" required />
+                            <input asp-for="Name" class="form-control" placeholder="Enter subcategory name"
+                                   required oninput="console.log('Name changed:', this.value)" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="@Url.Action("Index", "AdminCategory")" class="btn btn-secondary me-md-2">Cancel</a>
-                            <button type="submit" class="btn btn-success">Create SubCategory</button>
+                            <button type="submit" class="btn btn-success" onclick="console.log('Submit button clicked')">Create SubCategory</button>
                         </div>
                     </form>
                 </div>
@@ -53,9 +91,15 @@
         </div>
     </div>
 </div>
+
+<div>
+    <a asp-controller="AdminCategory" asp-action="Index">Back to List</a>
+</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+
+ 
 }
